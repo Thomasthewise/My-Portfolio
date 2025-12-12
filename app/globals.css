@@ -1,0 +1,114 @@
+/* Tailwind v3 directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme variables */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Base page styles */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif; /* swap to a Next/font later if you want */
+}
+
+/* Optional utility to style cards consistently */
+.card {
+  @apply rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900;
+}
+
+/* Floating and orbit animations (planet layer) */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-12px) }
+}
+.float-slow { animation: float-y 8s ease-in-out infinite; }
+
+@keyframes orbit {
+  from { transform: rotate(0deg) }
+  to   { transform: rotate(360deg) }
+}
+.planet-orbit { animation: orbit 120s linear infinite; transform-origin: 50% 50%; }
+
+/* Generic spin */
+@keyframes spin {
+  to { transform: rotate(360deg) }
+}
+
+/* Hero shine ribbon */
+@keyframes shine {
+  0% { background-position: 0% 0 }
+  100% { background-position: 200% 0 }
+}
+
+/* Hero floating/rotation for orbs */
+@keyframes floatRotate {
+  0%, 100% { transform: translateY(0) rotate(0deg) }
+  50% { transform: translateY(-10px) rotate(3deg) }
+}
+.float-rot { animation: floatRotate 12s ease-in-out infinite; }
+
+/* Scroll cue dot */
+.scroll-dot {
+  display: block;
+  height: 6px;
+  width: 6px;
+  border-radius: 9999px;
+  background: #c7d2fe; /* indigo-200 */
+  animation: scrollDot 1.4s ease-in-out infinite;
+}
+@keyframes scrollDot {
+  0% { transform: translateY(-8px); opacity: .3 }
+  50% { transform: translateY(4px); opacity: 1 }
+  100% { transform: translateY(-8px); opacity: .3 }
+}
+
+/* Splash intro (twinkling icons + fade out) */
+@keyframes twinkle {
+  0%, 100% { opacity: .25; transform: scale(.94) }
+  50% { opacity: 1; transform: scale(1) }
+}
+.twinkle-1 { animation: twinkle 1.2s ease-in-out infinite; }
+.twinkle-2 { animation: twinkle 1.4s ease-in-out infinite; }
+.twinkle-3 { animation: twinkle 1.6s ease-in-out infinite; }
+
+@keyframes fadeOverlay {
+  to { opacity: 0; visibility: hidden }
+}
+.fade-out { animation: fadeOverlay 600ms ease forwards; }
+
+/* Hide scrollbars for the tech carousel */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Fade-in animation for sections */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Smooth hover scale + shadow for cards */
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}

@@ -1,0 +1,44 @@
+{
+  "name": "my-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "docs": "jsdoc -c .jsdoc.conf.json",
+    "docs:serve": "http-server docs -p 8080 -o",
+    "docs:open": "open docs/index.html",
+    "docs:serve:global": "http-server docs -p ${PORT:-8080} -o /global.html",
+    "clean": "rm -rf .next out docs"
+  },
+  "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.15.0",
+    "@supabase/supabase-js": "^2.87.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.26",
+    "next": "^15.5.7",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "autoprefixer": "^10.4.21",
+    "clean-jsdoc-theme": "^4.3.0",
+    "eslint": "^9.14.0",
+    "eslint-config-next": "15.5.3",
+    "eslint-config-prettier": "^10.1.8",
+    "http-server": "^14.1.1",
+    "jsdoc": "^4.0.4",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^3.4.17"
+  }
+}
