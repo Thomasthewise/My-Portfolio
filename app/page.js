@@ -6,7 +6,6 @@ import SplashScreen from '@/components/SplashScreen'
 import TechCarousel from '@/components/TechCarousel'
 import Expertise from '@/components/Expertise'
 import ProjectsSection from '@/components/ProjectsSection'
-import ContactSection from '@/components/ContactSection'
 
 export default function Home() {
   return (
@@ -17,7 +16,7 @@ export default function Home() {
       <PlanetLayer />
       <CursorGlow />
 
-      <main className="relative z-10 mx-auto max-w-5xl px-4 py-10">
+      <main className="relative z-10 mx-auto max-w-5xl px-4 py-10" id="main">
         <section id="home">
           <LandingHero />
         </section>
@@ -33,10 +32,7 @@ export default function Home() {
         <section id="projects" className="mt-16">
           <ProjectsSection />
         </section>
-
-        <section id="contact" className="mt-16">
-          <ContactSection />
-        </section>
+        {/* ✅ No ContactSection here */}
       </main>
     </>
   )

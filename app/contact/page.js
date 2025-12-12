@@ -2,37 +2,28 @@
 
 import { useState, useEffect } from "react";
 import SectionTitle from "../../components/SectionTitle";
-import {
-  FaEnvelope,
-  FaPhone,
-  FaMapMarkerAlt,
-  FaGithub,
-  FaLinkedin,
-  FaInstagram,
-} from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
+    // Send to an API route or server action if needed
     setSubmitted(true);
     setForm({ name: "", email: "", message: "" });
   };
 
-  // Fade-in effect
   useEffect(() => {
     const sections = document.querySelectorAll(".fade-in");
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
+          if (entry.isIntersecting) entry.target.classList.add("visible");
         });
       },
       { threshold: 0.2 }
@@ -49,7 +40,6 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
           {/* Contact Info */}
           <div className="space-y-6 fade-in">
-            {/* Phone */}
             <a
               href="tel:+27714418242"
               className="hover-scale flex items-center space-x-4 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-5 transition-transform duration-300"
@@ -58,7 +48,6 @@ export default function ContactPage() {
               <span className="text-gray-700 dark:text-gray-200">071 441 8242</span>
             </a>
 
-            {/* Emails */}
             <div className="flex flex-col space-y-2 hover-scale bg-white dark:bg-gray-800 shadow-lg rounded-xl p-5 transition-transform duration-300">
               <a
                 href="mailto:bazo.matla@gmail.com"
@@ -76,7 +65,6 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Socials */}
             <div className="flex flex-col space-y-2 hover-scale bg-white dark:bg-gray-800 shadow-lg rounded-xl p-5 transition-transform duration-300">
               <a
                 href="https://github.com/Thomasthewise"
@@ -107,7 +95,6 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Location → Google Maps */}
             <a
               href="https://www.google.com/maps/place/Westonaria,+South+Africa"
               target="_blank"
@@ -148,10 +135,10 @@ export default function ContactPage() {
               placeholder="Your Message"
               value={form.message}
               onChange={handleChange}
-              rows="5"
+              rows={5}
               className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-900 dark:text-gray-100"
               required
-            ></textarea>
+            />
             <button
               type="submit"
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
@@ -164,7 +151,6 @@ export default function ContactPage() {
           </form>
         </div>
 
-        {/* Footer */}
         <footer className="mt-16 text-center text-gray-500 dark:text-gray-400 text-sm fade-in">
           © 2025 Thomas • Cape Town (GMT+2)
         </footer>

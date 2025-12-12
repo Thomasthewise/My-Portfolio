@@ -1,0 +1,13 @@
+
+generated/build
+.next
+node_modules
+out
+
+site docs and third-party bundles
+docs/**
+docs/scripts/**
+public/**/*.min.js
+
+one-off scripts
+fix-jsx-comments.js

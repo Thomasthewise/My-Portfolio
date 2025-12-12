@@ -1,4 +1,3 @@
-// app/auth/page.js
 'use client';
 import { useState } from 'react';
 import { supabase } from '../../../lib/supabase';
@@ -9,7 +8,7 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
 
   const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data: _data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setError(error.message);
     else {
       setError(null);

@@ -10,7 +10,7 @@ export default function SpaceScene() {
     const ctx = canvas.getContext('2d', { alpha: true })
     let w, h, dpr
     let stars = []
-    const meteors = []
+    let meteors = []
     let mx = 0
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 

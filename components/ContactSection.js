@@ -1,27 +1,21 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import {
-  FaEnvelope,
-  FaPhone,
-  FaMapMarkerAlt,
-  FaGithub,
-  FaLinkedin,
-  FaInstagram,
-} from "react-icons/fa"
+import { useState } from "react";
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 
 export default function ContactSection() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" })
-  const [submitted, setSubmitted] = useState(false)
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Form submitted:", form)
-    setSubmitted(true)
-    setForm({ name: "", email: "", message: "" })
-  }
+    e.preventDefault();
+    // Submit via API route or server action if needed
+    setSubmitted(true);
+    setForm({ name: "", email: "", message: "" });
+  };
 
   return (
     <section id="contact" className="py-20 min-h-screen">
@@ -29,9 +23,7 @@ export default function ContactSection() {
         <h2 className="text-3xl font-semibold text-white mb-6">Contact Me</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
-          {/* Contact Info */}
           <div className="space-y-6">
-            {/* Phone */}
             <a
               href="tel:+27714418242"
               className="flex items-center space-x-4 bg-white/5 shadow-lg rounded-xl p-5 hover:shadow-2xl transition-transform duration-300 hover:scale-105"
@@ -40,7 +32,6 @@ export default function ContactSection() {
               <span className="text-gray-200">071 441 8242</span>
             </a>
 
-            {/* Emails */}
             <div className="flex flex-col space-y-2 bg-white/5 shadow-lg rounded-xl p-5 hover:shadow-2xl transition-transform duration-300 hover:scale-105">
               <a
                 href="mailto:bazo.matla@gmail.com"
@@ -58,7 +49,6 @@ export default function ContactSection() {
               </a>
             </div>
 
-            {/* Socials */}
             <div className="flex flex-col space-y-2 bg-white/5 shadow-lg rounded-xl p-5 hover:shadow-2xl transition-transform duration-300 hover:scale-105">
               <a
                 href="https://github.com/Thomasthewise"
@@ -89,7 +79,6 @@ export default function ContactSection() {
               </a>
             </div>
 
-            {/* Location → Google Maps */}
             <a
               href="https://www.google.com/maps/place/Westonaria,+South+Africa"
               target="_blank"
@@ -101,7 +90,6 @@ export default function ContactSection() {
             </a>
           </div>
 
-          {/* Contact Form */}
           <form
             onSubmit={handleSubmit}
             className="bg-white/5 shadow-lg rounded-xl p-8 space-y-6 transition-transform duration-300 hover:scale-105"
@@ -130,10 +118,10 @@ export default function ContactSection() {
               placeholder="Your Message"
               value={form.message}
               onChange={handleChange}
-              rows="5"
+              rows={5}
               className="w-full p-3 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-transparent text-gray-100"
               required
-            ></textarea>
+            />
             <button
               type="submit"
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
@@ -146,11 +134,10 @@ export default function ContactSection() {
           </form>
         </div>
 
-        {/* Footer */}
         <footer className="mt-16 text-center text-gray-500 text-sm">
           © 2025 Thomas • Cape Town (GMT+2)
         </footer>
       </div>
     </section>
-  )
+  );
 }

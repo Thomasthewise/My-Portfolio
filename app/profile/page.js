@@ -8,17 +8,17 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = supabase.auth.getUser();
-      if (!user) return;
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) return;
 
-      const { data, error } = await supabase
+      const { data: profileData, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("user_id", (await user).data.user.id)
+        .eq("user_id", userData.user.id)
         .single();
 
-      if (error) console.error(error);
-      else setProfile(data);
+      if (error) console.error("Profile fetch error:", error);
+      else setProfile(profileData);
     };
 
     fetchProfile();

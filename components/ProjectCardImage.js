@@ -1,15 +1,28 @@
-'use client'
+'use client';
 
-import React from 'react'
+import Image from 'next/image';
 
 export default function ProjectCardImage({ project }) {
+  const src = project?.image || '/placeholder.png';
+  const title = project?.title || 'Project image';
+  const category = project?.category || '';
+
   return (
     <div className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/80 shadow-lg">
-      <img src={project.image} alt={project.title} className="h-48 w-full object-cover transition-transform group-hover:scale-105" />
+      <div className="relative h-48 w-full">
+        <Image
+          src={src}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          priority={false}
+        />
+      </div>
       <div className="p-4">
-        <h3 className="text-white font-semibold">{project.title}</h3>
-        <p className="text-zinc-400 text-sm mt-1">{project.category}</p>
+        <h3 className="text-white font-semibold">{title}</h3>
+        {category && <p className="text-zinc-400 text-sm mt-1">{category}</p>}
       </div>
     </div>
-  )
+  );
 }

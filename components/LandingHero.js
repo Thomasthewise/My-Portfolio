@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 export default function LandingHero() {
-  // Fade-in effect
   useEffect(() => {
     const sections = document.querySelectorAll(".fade-in");
     const observer = new IntersectionObserver(
@@ -11,17 +10,22 @@ export default function LandingHero() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
+            observer.unobserve(entry.target); // stop observing once visible
           }
         });
       },
       { threshold: 0.2 }
     );
+
     sections.forEach((section) => observer.observe(section));
-    return () => sections.forEach((section) => observer.unobserve(section));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
   }, []);
 
   return (
-    <section className="fade-in min-h-screen flex flex-col justify-center items-center text-center px-6 bg-transparent">
+    <section className="fade-in min-h-screen flex flex-col justify-center items-center text-center px-6">
       <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
         THOMAS
       </h1>

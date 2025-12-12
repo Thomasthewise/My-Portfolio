@@ -28,8 +28,7 @@ function ActionButton({ text, onClick }) {
         await navigator.clipboard.writeText(text);
         setDone(true);
         setTimeout(() => setDone(false), 1500);
-      } catch (e) {
-        console.warn("copy failed", e);
+      } catch {
         setDone(false);
       }
     } else if (onClick) {
@@ -52,7 +51,7 @@ export default function SupaTest() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [query, setQuery] = useState("");
-  const [view, setView] = useState("cards"); // cards | table
+  const [view, setView] = useState("cards");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -64,8 +63,8 @@ export default function SupaTest() {
         const { data: userData } = await supabase.auth.getUser();
         if (!mounted) return;
         setUser(userData.user || null);
-      } catch (err) {
-        console.error("getUser error", err);
+      } catch {
+        if (mounted) setUser(null);
       }
 
       try {
@@ -77,14 +76,12 @@ export default function SupaTest() {
 
         if (!mounted) return;
         if (error) {
-          console.error("Supabase fetch error:", error);
           setError(error.message || "Failed to load profiles");
           setProfiles([]);
         } else {
           setProfiles(data || []);
         }
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError("Unexpected error");
         setProfiles([]);
       } finally {
@@ -101,12 +98,11 @@ export default function SupaTest() {
   const filtered = useMemo(() => {
     if (!query.trim()) return profiles;
     const q = query.toLowerCase().trim();
-    return profiles.filter((p) => {
-      return (
+    return profiles.filter(
+      (p) =>
         (p.username || "").toLowerCase().includes(q) ||
         (p.email || "").toLowerCase().includes(q)
-      );
-    });
+    );
   }, [profiles, query]);
 
   const isAdminView = view === "table";
@@ -146,13 +142,17 @@ export default function SupaTest() {
             <div className="inline-flex rounded-md shadow-sm" role="group">
               <button
                 onClick={() => setView("cards")}
-                className={`px-3 py-2 text-sm font-medium border border-r-0 rounded-l ${view === "cards" ? "bg-black text-white" : "bg-white text-black"}`}
+                className={`px-3 py-2 text-sm font-medium border border-r-0 rounded-l ${
+                  view === "cards" ? "bg-black text-white" : "bg-white text-black"
+                }`}
               >
                 Cards
               </button>
               <button
                 onClick={() => setView("table")}
-                className={`px-3 py-2 text-sm font-medium border rounded-r ${view === "table" ? "bg-black text-white" : "bg-white text-black"}`}
+                className={`px-3 py-2 text-sm font-medium border rounded-r ${
+                  view === "table" ? "bg-black text-white" : "bg-white text-black"
+                }`}
               >
                 Table
               </button>
@@ -170,7 +170,9 @@ export default function SupaTest() {
           <div className="py-8 text-center text-red-600">{error}</div>
         ) : filtered.length === 0 ? (
           <div className="py-12 text-center">
-            <p className="text-black/80">No profiles found (try clearing the filter or logging in).</p>
+            <p className="text-black/80">
+              No profiles found (try clearing the filter or logging in).
+            </p>
           </div>
         ) : isAdminView ? (
           <div className="overflow-x-auto">
@@ -195,26 +197,20 @@ export default function SupaTest() {
                         </div>
                       </div>
                     </td>
-
                     <td className="px-4 py-3">
                       <div className="text-sm text-black break-words">{p.email || "—"}</div>
                     </td>
-
                     <td className="px-4 py-3">
                       <div className="text-xs text-zinc-500 break-words">{p.user_id || "—"}</div>
                     </td>
-
                     <td className="px-4 py-3">
                       <div className="text-sm text-zinc-700">
                         {p.created_at ? new Date(p.created_at).toLocaleString() : "—"}
                       </div>
                     </td>
-
                     <td className="px-4 py-3 flex gap-2">
                       <ActionButton text={p.email} onClick={null} />
-                      <ActionButton
-                        onClick={() => p.email && window.open(`mailto:${p.email}`)}
-                      />
+                      <ActionButton onClick={() => p.email && window.open(`mailto:${p.email}`)} />
                     </td>
                   </tr>
                 ))}
@@ -235,7 +231,6 @@ export default function SupaTest() {
                       <h2 className="text-lg font-semibold text-black">{p.username || "—"}</h2>
                       <p className="mt-1 text-sm text-black/85 break-words">{p.email || "—"}</p>
                     </div>
-
                     <div className="flex flex-col items-end gap-2">
                       <div className="text-xs text-zinc-500">Joined</div>
                       <div className="text-sm text-zinc-700">
@@ -243,7 +238,6 @@ export default function SupaTest() {
                       </div>
                     </div>
                   </div>
-
                   <div className="mt-3 flex items-center gap-2">
                     <ActionButton text={p.email} onClick={null} />
                     <ActionButton
@@ -259,3 +253,4 @@ export default function SupaTest() {
     </section>
   );
 }
+
