@@ -1,122 +1,127 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
-import { supabase } from "../../../lib/supabase";
-import slugify from "slugify";
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import supabase from '@/lib/supabase';
+import { addProject, submitContactForm } from '@/lib/supabase-functions';
 
-export default function Projects({ user }) {
+export default function ProjectsIndex() {
   const [projects, setProjects] = useState([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [contact, setContact] = useState({ name: '', email: '', message: '' });
+  const [contactStatus, setContactStatus] = useState('');
+  const [loadingProjects, setLoadingProjects] = useState(true);
 
-  const fetchProjects = useCallback(async () => {
-    if (!user) return setProjects([]);
-
-    const { data, error } = await supabase
-      .from("projects")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("position", { ascending: true });
-
-    if (error) {
-      if (process.env.NODE_ENV !== "production") console.error("fetchProjects error:", error);
-      setProjects([]);
-    } else setProjects(data || []);
-  }, [user]);
-
+  // Fetch projects from Supabase on mount
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
-
-  const handleUpload = async () => {
-    if (!user) return alert("You must be signed in");
-    if (!title) return alert("Please add a title");
-    if (!image) return alert("Please add an image file");
-
-    setLoading(true);
-    try {
-      const fileExt = image.name.split(".").pop();
-      const fileName = `${slugify(title, { lower: true, strict: true })}-${Date.now()}.${fileExt}`;
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("projects")
-        .upload(fileName, image, { upsert: false });
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } = {} } = supabase.storage
-        .from("projects")
-        .getPublicUrl(fileName);
-
-      const publicURL = publicUrl || (uploadData?.path && `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/projects/${uploadData.path}`);
-
-      const { error } = await supabase.from("projects").insert({
-        title,
-        slug: slugify(title, { lower: true, strict: true }),
-        description,
-        image_url: publicURL,
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-      });
-      if (error) throw error;
-
-      setTitle("");
-      setDescription("");
-      setImage(null);
-      await fetchProjects();
-    } catch (_err) {
-      if (process.env.NODE_ENV !== "production") console.error("handleUpload error", _err);
-      alert(_err.message || "Upload error");
-    } finally {
-      setLoading(false);
+    async function fetchProjects() {
+      const { data, error } = await supabase.from('projects').select();
+      if (error) console.error('Error fetching projects:', error);
+      else setProjects(data);
+      setLoadingProjects(false);
     }
-  };
+    fetchProjects();
+  }, []);
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this project?")) return;
-    const { error } = await supabase.from("projects").delete().eq("id", id);
-    if (error) alert(error.message);
-    else fetchProjects();
-  };
+  // Add a new sample project
+  async function handleAddProject() {
+    try {
+      const newProject = await addProject({
+        title: 'My Project',
+        description: 'Demo project description',
+        link: 'https://example.com'
+      });
+      setProjects([...projects, newProject]);
+    } catch (err) {
+      console.error('Error adding project:', err);
+    }
+  }
+
+  // Handle contact form input changes
+  function handleChange(e) {
+    setContact({ ...contact, [e.target.name]: e.target.value });
+  }
+
+  // Submit contact form
+  async function handleContactSubmit(e) {
+    e.preventDefault();
+    try {
+      await submitContactForm(contact);
+      setContactStatus('Message sent successfully!');
+      setContact({ name: '', email: '', message: '' });
+    } catch (err) {
+      console.error(err);
+      setContactStatus('Failed to send message.');
+    }
+    setTimeout(() => setContactStatus(''), 5000); // clear status after 5s
+  }
 
   return (
-    <section className="mb-10">
-      <h2 className="text-xl font-semibold mb-3">Projects</h2>
-
-      <div className="grid gap-2 mb-4">
-        <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Title" className="border p-2" />
-        <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Description (Markdown ok)" className="border p-2" />
-        <input type="file" onChange={(e)=>setImage(e.target.files?.[0] ?? null)} />
-        <div className="flex gap-2">
-          <button onClick={handleUpload} disabled={loading} className="bg-indigo-600 text-white px-4 py-2 rounded">
-            {loading ? "Uploading…" : "Add Project"}
-          </button>
-        </div>
+    <div className="p-8 max-w-4xl mx-auto space-y-12">
+      {/* Projects Section */}
+      <div>
+        <h1 className="text-2xl font-semibold mb-4">Projects</h1>
+        <button 
+          onClick={handleAddProject} 
+          className="mb-6 px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+        >
+          Add Sample Project
+        </button>
+        {loadingProjects ? (
+          <p>Loading projects...</p>
+        ) : (
+          <ul className="space-y-3">
+            {projects.map(p => (
+              <li key={p.id} className="border rounded p-3">
+                <h3 className="font-semibold">{p.title}</h3>
+                <p className="text-sm text-gray-700">{p.description}</p>
+                <a href={p.link} target="_blank" className="text-sm text-indigo-500 hover:underline mr-3">
+                  Live Link
+                </a>
+                <Link href={`/dashboard/projects/${p.slug || p.id}`} className="text-sm text-indigo-500 hover:underline">
+                  Open
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <ul>
-        {projects.length === 0 && <li className="text-sm text-zinc-400">No projects yet.</li>}
-        {projects.map((p) => (
-          <li key={p.id} className="border p-3 rounded mb-2 flex gap-4 items-start">
-            <div className="w-28 h-20 bg-zinc-800 shrink-0">
-              {p.image_url ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" /> : null}
-            </div>
-            <div className="flex-1">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-semibold">{p.title}</h3>
-                  <p className="text-sm text-zinc-400">{p.description}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-zinc-500">{new Date(p.created_at).toLocaleString()}</p>
-                  <button onClick={()=>handleDelete(p.id)} className="text-red-500 text-sm mt-2">Delete</button>
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </section>
+      {/* Contact Form Section */}
+      <div className="border rounded p-6">
+        <h2 className="text-xl font-semibold mb-4">Contact Form</h2>
+        <form onSubmit={handleContactSubmit} className="space-y-4">
+          <input 
+            type="text" 
+            name="name" 
+            placeholder="Name" 
+            value={contact.name} 
+            onChange={handleChange} 
+            className="w-full border px-3 py-2 rounded"
+            required
+          />
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Email" 
+            value={contact.email} 
+            onChange={handleChange} 
+            className="w-full border px-3 py-2 rounded"
+            required
+          />
+          <textarea 
+            name="message" 
+            placeholder="Message" 
+            value={contact.message} 
+            onChange={handleChange} 
+            className="w-full border px-3 py-2 rounded"
+            required
+          />
+          <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+            Send Message
+          </button>
+        </form>
+        {contactStatus && <p className="mt-2 text-sm text-gray-700">{contactStatus}</p>}
+      </div>
+    </div>
   );
 }
